@@ -220,3 +220,8 @@ def sentiment_analysis(anio:int):
     }
     
     return result
+
+@app.get("/SentRes")
+def sentiment_analysis(anio:int):
+        
+    return {'clave': 'valor'}
