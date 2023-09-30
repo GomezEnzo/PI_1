@@ -3,8 +3,7 @@ from pydantic import BaseModel
 from typing import Optional
 import pandas as pd
 
-archivo_csv = ('c:/Users/nissi/OneDrive/Escritorio/PI MLOps - STEAM/Total.csv')
-df = pd.read_csv(archivo_csv)
+
 
 app = FastAPI()
 
@@ -21,7 +20,8 @@ def PlayTimeGenre(genero: str):
         dict: Un diccionario que contiene el año de lanzamiento con más horas jugadas.
               Ejemplo: {"Año de lanzamiento con más horas jugadas para [genero]": [año]}
     """
-    
+    archivo_csv = ('dataframes/df1.csv')
+    df = pd.read_csv(archivo_csv)
     # Convierto el género ingresado por el usuario a minúsculas para que lo encuentre
     genero = genero.lower()
     
@@ -46,9 +46,6 @@ def PlayTimeGenre(genero: str):
     
     return resultado
 
-genero_deseado = input("Ingrese el género: ")
-res = PlayTimeGenre(genero_deseado)
-print(res)
 
 
 @app.get("/UsuarioConMasHorasJugadas")
@@ -66,6 +63,9 @@ def UserForGenre(genero: str):
               Ejemplo: {"Usuario con más horas jugadas para [genero]": [usuario]}
                         "Acumulación de horas jugadas por año para [genero]": [año: horas]
     """
+    
+    archivo_csv = ('dataframes/df2.csv')
+    df = pd.read_csv(archivo_csv)
     
     # Convierto lo ingresado a minúsculas
     genero = genero.lower()
@@ -100,11 +100,6 @@ def UserForGenre(genero: str):
     
     return result
 
-genero = input("Ingrese el género: ")
-resultado = UserForGenre(genero)
-print(resultado)
-
-
 
 
 
@@ -122,6 +117,9 @@ def UsersRecommend(anio: int):
         Ejemplo: {"Puesto 1": ['nombre de juego'], "Puesto 2": ['nombre de juego'],"Puesto 3": ['nombre de juego']
     
     """
+    
+    archivo_csv = ('dataframes/df3.csv')
+    df = pd.read_csv(archivo_csv)
     
     # Filtro el df por año
     df_year = df[df['release_year'] == anio]
@@ -144,10 +142,6 @@ def UsersRecommend(anio: int):
     
     return result
 
-anio_deseado = int(input("Ingrese el año: "))
-resultado = UsersRecommend(anio_deseado)
-print(resultado)
-
 
 
 @app.get("/MenosRecomendados")
@@ -164,6 +158,8 @@ def UsersNotRecommend(anio: int):
         Ejemplo: {"Puesto 1": ['nombre de juego'], "Puesto 2": ['nombre de juego'],"Puesto 3": ['nombre de juego']
     
     """
+    archivo_csv = ('dataframes/df3.csv')
+    df = pd.read_csv(archivo_csv)
     
     # Filtro el df por el año ingresado
     df_año = df[df['release_year'] == anio]
@@ -186,9 +182,6 @@ def UsersNotRecommend(anio: int):
     
     return result
 
-anio_deseado = int(input("Ingrese el año: "))
-resultado = UsersNotRecommend(anio_deseado)
-print(resultado)
 
 @app.get("/SentReseñas")
 def sentiment_analysis(anio:int):
@@ -205,6 +198,8 @@ def sentiment_analysis(anio:int):
         Ejemplo: {Negative = [cantidad_reseñas], Neutral = [cantidad_reseñas], Positive = [cantidad_reseñas]}
     
     """   
+    archivo_csv = ('dataframes/df5.csv')
+    df = pd.read_csv(archivo_csv)
     
     # Filtrar el DataFrame por el año ingresado
     df_año = df[df['release_year'] == anio]
@@ -225,7 +220,3 @@ def sentiment_analysis(anio:int):
     }
     
     return result
-
-anio_deseado = int(input("Ingrese el año: "))
-resultado = sentiment_analysis(anio_deseado)
-print(resultado)
