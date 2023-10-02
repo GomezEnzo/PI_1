@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
 import pandas as pd
-
+import numpy as np
 
 
 app = FastAPI()
@@ -221,7 +221,42 @@ def sentiment_analysis(anio:int):
     
     return result
 
-@app.get("/SentRes")
-def sentiment_analysis(anio:int):
-        
-    return {'clave': 'valor'}
+
+
+
+@app.get("/Recomendacion_Usuario")
+def encontrar_juegos_similares(similarity_df, num_juegos_similares: int = 5):
+    
+    archivo_csv = 'dataframes/Sdf.csv'
+    similarity_df = pd.read_csv(archivo_csv)
+
+    """
+    Según el nombre de usuario dado, se devuelve una lista con 5 (cinco) juegos 
+    que le podrían interesar al usuario, basado en usuarios con gustos similares.
+
+    Argumentos:
+        similarity_df (DataFrame): El DataFrame de similitud.
+        num_juegos_similares (int): El número de juegos recomendados a devolver.
+
+    Returns:
+        list: Una lista que contiene los nombres de los juegos recomendados.
+    """
+   
+    usuario = input("Ingresa tu nombre de usuario: ")
+    
+    try:
+        indice_usuario = similarity_df.index.get_loc(usuario)
+    except KeyError:
+        return "Usuario no encontrado en la matriz de similitud."
+
+    fila_similitud = similarity_df.iloc[indice_usuario, :]
+    juegos_ordenados = np.argsort(fila_similitud)[::-1]
+    juegos_seleccionados = juegos_ordenados[:num_juegos_similares]
+
+    return juegos_seleccionados
+
+num_juegos_similares = 5 
+juegos_similares = encontrar_juegos_similares(similarity_df, num_juegos_similares)
+
+print("Juegos similares al juego de entrada:")
+print(juegos_similares)
