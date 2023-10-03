@@ -136,7 +136,7 @@ def UsersRecommend(anio: int):
     
     # Tomo los 3 juegos más recomendados
     top_3_games = game_recommend_counts.head(3).reset_index()
-    
+    # 
     # Formateo el resultado como una lista de diccionarios
     result = [{"Puesto " + str(i + 1): juego} for i, juego in enumerate(top_3_games['item_name_x'])]
     
