@@ -225,9 +225,9 @@ def sentiment_analysis(anio:int):
 
 
 @app.get("/Recomendacion_Usuario")
-def encontrar_juegos_similares(similarity_df, num_juegos_similares: int = 5):
+def encontrar_juegos_similares(usuario, num_juegos_similares: int = 5):
     
-    archivo_csv = 'dataframes/Sdf.csv'
+    archivo_csv = 'dataframes/similarity.csv'
     similarity_df = pd.read_csv(archivo_csv)
 
     """
@@ -242,21 +242,16 @@ def encontrar_juegos_similares(similarity_df, num_juegos_similares: int = 5):
         list: Una lista que contiene los nombres de los juegos recomendados.
     """
    
-    usuario = input("Ingresa tu nombre de usuario: ")
-    
+
     try:
-        indice_usuario = similarity_df.index.get_loc(usuario)
-    except KeyError:
+        indice_usuario = similarity_df.loc[similarity_df['user_id']==usuario].index.item()
+        #
+        #similarity_df.index.get_loc('marcsprofile')
+    except:
         return "Usuario no encontrado en la matriz de similitud."
 
-    fila_similitud = similarity_df.iloc[indice_usuario, :]
-    juegos_ordenados = np.argsort(fila_similitud)[::-1]
+    fila_similitud = similarity_df.iloc[indice_usuario, 1:]
+    juegos_ordenados = np.argsort(fila_similitud.to_numpy())[::-1]
     juegos_seleccionados = juegos_ordenados[:num_juegos_similares]
 
-    return juegos_seleccionados
-
-num_juegos_similares = 5 
-juegos_similares = encontrar_juegos_similares(similarity_df, num_juegos_similares)
-
-print("Juegos similares al juego de entrada:")
-print(juegos_similares)
+    return {"result": similarity_df.iloc[:, juegos_seleccionados].columns.to_numpy().tolist()}
